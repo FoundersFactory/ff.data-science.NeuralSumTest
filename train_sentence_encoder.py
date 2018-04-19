@@ -248,7 +248,7 @@ def main(_):
 
         # build graph for validation and testing (shares parameters with the training graph!)
         with tf.variable_scope("Model", reuse=True):
-            valid_model = build_model(word_vocab, train=False)
+            valid_model = build_model(char_vocab_size, train=False)
 
         if FLAGS.load_model:
             saver.restore(session, FLAGS.load_model)
@@ -256,7 +256,7 @@ def main(_):
         else:
             tf.global_variables_initializer().run()
             session.run(train_model.clear_word_embedding_padding)
-            print('Created and initialized fresh model. Size:', model.model_size())
+            print('Created and initialized fresh model. Size:', neural_summarizer.model_size())
 
         summary_writer = tf.summary.FileWriter(FLAGS.train_dir, graph=session.graph)
 
