@@ -17,6 +17,7 @@ flags = tf.flags
 flags.DEFINE_string('data_dir',    '/home/ubuntu/data_store/training_data/10',   'data directory. Should contain train.txt/valid.txt/test.txt with input data')
 flags.DEFINE_string('train_dir',   'cv',     'training directory (models and summaries are saved there periodically)')
 flags.DEFINE_string('load_model',   None,    '(optional) filename of the model to load. Useful for re-starting training from a checkpoint')
+flags.DEFINE_string('master_file', 'main/main_10.csv', 'path to master .csv containing locations of all training data')
 
 # model params
 flags.DEFINE_string ('model_choice',    'lstm',                         'model choice')
