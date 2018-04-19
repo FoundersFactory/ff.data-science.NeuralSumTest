@@ -105,7 +105,7 @@ def build_model(char_vocab_size, train):
         pretrained_emb = None
 
         if FLAGS.model_choice == 'bilstm':
-            my_model = model.cnn_sen_enc(
+            my_model = neural_summarizer.cnn_sen_enc(
                     word_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
@@ -116,21 +116,21 @@ def build_model(char_vocab_size, train):
                     max_doc_length=FLAGS.max_doc_length,
                     pretrained=pretrained_emb)
 
-            my_model.update(model.bilstm_doc_enc(my_model.input_cnn,
+            my_model.update(neural_summarizer.bilstm_doc_enc(my_model.input_cnn,
                                            batch_size=FLAGS.batch_size,
                                            num_rnn_layers=FLAGS.rnn_layers,
                                            rnn_size=FLAGS.rnn_size,
                                            max_doc_length=FLAGS.max_doc_length,
                                            dropout=FLAGS.dropout))
 
-            my_model.update(model.label_prediction(my_model.enc_outputs))
-            my_model.update(model.self_prediction(my_model.enc_outputs, char_vocab_size))
-            my_model.update(model.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
-            my_model.update(model.training_graph(my_model.loss * FLAGS.max_doc_length,
+            my_model.update(neural_summarizer.label_prediction(my_model.enc_outputs))
+            my_model.update(neural_summarizer.self_prediction(my_model.enc_outputs, char_vocab_size))
+            my_model.update(neural_summarizer.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
+            my_model.update(neural_summarizer.training_graph(my_model.loss * FLAGS.max_doc_length,
                     FLAGS.learning_rate, FLAGS.max_grad_norm))
 
         elif FLAGS.model_choice == 'lstm':
-            my_model = model.cnn_sen_enc(
+            my_model = neural_summarizer.cnn_sen_enc(
                     word_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
@@ -141,30 +141,30 @@ def build_model(char_vocab_size, train):
                     max_doc_length=FLAGS.max_doc_length,
                     pretrained=pretrained_emb)
 
-            my_model.update(model.lstm_doc_enc(my_model.input_cnn,
+            my_model.update(neural_summarizer.lstm_doc_enc(my_model.input_cnn,
                                            batch_size=FLAGS.batch_size,
                                            num_rnn_layers=FLAGS.rnn_layers,
                                            rnn_size=FLAGS.rnn_size,
                                            max_doc_length=FLAGS.max_doc_length,
                                            dropout=FLAGS.dropout))
 
-            my_model.update(model.lstm_doc_dec(my_model.input_cnn, my_model.final_enc_state,
+            my_model.update(neural_summarizer.lstm_doc_dec(my_model.input_cnn, my_model.final_enc_state,
                                            batch_size=FLAGS.batch_size,
                                            num_rnn_layers=FLAGS.rnn_layers,
                                            rnn_size=FLAGS.rnn_size,
                                            max_doc_length=FLAGS.max_doc_length,
                                            dropout=FLAGS.dropout))
 
-            my_model.update(model.label_prediction_att(my_model.enc_outputs, my_model.dec_outputs))
-            my_model.update(model.self_prediction(my_model.enc_outputs, char_vocab_size))
-            my_model.update(model.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
+            my_model.update(neural_summarizer.label_prediction_att(my_model.enc_outputs, my_model.dec_outputs))
+            my_model.update(neural_summarizer.self_prediction(my_model.enc_outputs, char_vocab_size))
+            my_model.update(neural_summarizer.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
 
-            my_model.update(model.training_graph(my_model.loss * FLAGS.max_doc_length,
+            my_model.update(neural_summarizer.training_graph(my_model.loss * FLAGS.max_doc_length,
                     FLAGS.learning_rate, FLAGS.max_grad_norm))
 
     else:
         if FLAGS.model_choice == 'bilstm':
-            my_model = model.cnn_sen_enc(
+            my_model = neural_summarizer.cnn_sen_enc(
                     word_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
@@ -174,18 +174,18 @@ def build_model(char_vocab_size, train):
                     kernel_features=eval(FLAGS.kernel_features),
                     max_doc_length=FLAGS.max_doc_length)
 
-            my_model.update(model.bilstm_doc_enc(my_model.input_cnn,
+            my_model.update(neural_summarizer.bilstm_doc_enc(my_model.input_cnn,
                                            batch_size=FLAGS.batch_size,
                                            num_rnn_layers=FLAGS.rnn_layers,
                                            rnn_size=FLAGS.rnn_size,
                                            max_doc_length=FLAGS.max_doc_length,
                                            dropout=FLAGS.dropout))
 
-            my_model.update(model.self_prediction(my_model.enc_outputs, char_vocab_size))
-            my_model.update(model.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
+            my_model.update(neural_summarizer.self_prediction(my_model.enc_outputs, char_vocab_size))
+            my_model.update(neural_summarizer.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
 
         elif FLAGS.model_choice == 'lstm':
-            my_model = model.cnn_sen_enc(
+            my_model = neural_summarizer.cnn_sen_enc(
                     word_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
@@ -195,22 +195,22 @@ def build_model(char_vocab_size, train):
                     kernel_features=eval(FLAGS.kernel_features),
                     max_doc_length=FLAGS.max_doc_length)
 
-            my_model.update(model.lstm_doc_enc(my_model.input_cnn,
+            my_model.update(neural_summarizer.lstm_doc_enc(my_model.input_cnn,
                                            batch_size=FLAGS.batch_size,
                                            num_rnn_layers=FLAGS.rnn_layers,
                                            rnn_size=FLAGS.rnn_size,
                                            max_doc_length=FLAGS.max_doc_length,
                                            dropout=FLAGS.dropout))
 
-            my_model.update(model.lstm_doc_dec(my_model.input_cnn, my_model.final_enc_state,
+            my_model.update(neural_summarizer.lstm_doc_dec(my_model.input_cnn, my_model.final_enc_state,
                                            batch_size=FLAGS.batch_size,
                                            num_rnn_layers=FLAGS.rnn_layers,
                                            rnn_size=FLAGS.rnn_size,
                                            max_doc_length=FLAGS.max_doc_length,
                                            dropout=FLAGS.dropout))
 
-            my_model.update(model.self_prediction(my_model.enc_outputs, char_vocab_size))
-            my_model.update(model.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
+            my_model.update(neural_summarizer.self_prediction(my_model.enc_outputs, char_vocab_size))
+            my_model.update(neural_summarizer.loss_pretrain(my_model.plogits, FLAGS.batch_size, FLAGS.max_doc_length, char_vocab_size))
     return my_model
 
 
