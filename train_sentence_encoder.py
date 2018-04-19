@@ -106,7 +106,7 @@ def build_model(char_vocab_size, train):
 
         if FLAGS.model_choice == 'bilstm':
             my_model = neural_summarizer.cnn_sen_enc(
-                    word_vocab_size=char_vocab_size,
+                    char_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
                     num_highway_layers=FLAGS.highway_layers,
@@ -131,7 +131,7 @@ def build_model(char_vocab_size, train):
 
         elif FLAGS.model_choice == 'lstm':
             my_model = neural_summarizer.cnn_sen_enc(
-                    word_vocab_size=char_vocab_size,
+                    char_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
                     num_highway_layers=FLAGS.highway_layers,
@@ -165,7 +165,7 @@ def build_model(char_vocab_size, train):
     else:
         if FLAGS.model_choice == 'bilstm':
             my_model = neural_summarizer.cnn_sen_enc(
-                    word_vocab_size=char_vocab_size,
+                    char_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
                     num_highway_layers=FLAGS.highway_layers,
@@ -186,7 +186,7 @@ def build_model(char_vocab_size, train):
 
         elif FLAGS.model_choice == 'lstm':
             my_model = neural_summarizer.cnn_sen_enc(
-                    word_vocab_size=char_vocab_size,
+                    char_vocab_size=char_vocab_size,
                     word_embed_size=FLAGS.word_embed_size,
                     batch_size=FLAGS.batch_size,
                     num_highway_layers=FLAGS.highway_layers,
