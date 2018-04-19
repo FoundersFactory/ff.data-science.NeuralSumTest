@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 
 import neural_summarizer
-from data_reader import load_data, DataReader
+from blackbox_data_reader import load_data, DOMReader
 
 
 flags = tf.flags
@@ -225,7 +225,9 @@ def main(_):
         FLAGS.master_file
     )
 
-    data_reader = DataReader(line_tensor, label_tensor, FLAGS.batch_size)
+    char_vocab_size = max([x for dom in line_tensor for line in dom for x in line])
+
+    data_reader = DOMReader(line_tensor, label_tensor, FLAGS.batch_size)
 
     print('Initialized all dataset readers')
 
