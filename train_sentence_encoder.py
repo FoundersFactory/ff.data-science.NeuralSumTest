@@ -242,7 +242,7 @@ def main(_):
         initializer = tf.random_uniform_initializer(-FLAGS.param_init, FLAGS.param_init)
 
         with tf.variable_scope("Model", initializer=initializer):
-            train_model = build_model(word_vocab, train=True)
+            train_model = build_model(char_vocab_size, train=True)
 
         # create saver before creating more graph nodes, so that we do not save any vars defined below
         saver = tf.train.Saver(max_to_keep=50)
