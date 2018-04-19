@@ -126,11 +126,11 @@ class DOMReader:
 
         # Round down length to whole number of slices
         clipped_length = int(length / batch_size) * batch_size
-        word_tensor = word_tensor[:clipped_length]
+        line_tensor = line_tensor[:clipped_length]
         label_tensor = label_tensor[:clipped_length]
 
         # Put n-dimensional tensors into (n + 1)-dimensional batch lists
-        x_batches = word_tensor.reshape([batch_size, -1, dom_length, line_length])
+        x_batches = line_tensor.reshape([batch_size, -1, dom_length, line_length])
         y_batches = label_tensor.reshape([batch_size, -1, dom_length])
 
         x_batches = np.transpose(x_batches, axes=(1, 0, 2, 3))
