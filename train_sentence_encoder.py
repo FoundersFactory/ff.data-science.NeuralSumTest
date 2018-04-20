@@ -228,7 +228,7 @@ def main(_):
 
     char_vocab_size = max([x for dom in line_tensor for line in dom for x in line])
 
-    data_reader = DOMReader(line_tensor, label_tensor, FLAGS.batch_size)
+    train_reader = DOMReader(line_tensor, label_tensor, FLAGS.batch_size)
 
     print('Initialized all dataset readers')
 
