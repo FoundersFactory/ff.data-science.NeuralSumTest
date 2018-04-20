@@ -14,7 +14,7 @@ from data_reader import load_data, DataReader
 flags = tf.flags
 
 # data
-flags.DEFINE_string('data_dir',    'data/demo',   'data directory. Should contain train.txt/valid.txt/test.txt with input data')
+flags.DEFINE_string('data_dir',    '/export/projects/NeuralSum/data/neuralsum/cnn',   'data directory. Should contain train.txt/valid.txt/test.txt with input data')
 flags.DEFINE_string('train_dir',   'cv',     'training directory (models and summaries are saved there periodically)')
 flags.DEFINE_string('load_model',   None,    '(optional) filename of the model to load. Useful for re-starting training from a checkpoint')
 
@@ -85,8 +85,8 @@ def sparse2dense(x, vocab_size):
     '''converts a sparse input to a dense representation, for computing the reconstruction loss'''
 
     x_dense = np.zeros([x.shape[0], x.shape[1], vocab_size], dtype=np.int32)
-    for i in xrange(x.shape[0]):
-        for j in xrange(x.shape[1]):
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
             data_idx = x[i][j]
             x_dense[i][j][data_idx] = 1
     return x_dense
@@ -212,6 +212,9 @@ def build_model(word_vocab, train):
 
 
 def main(_):
+
+    os.environ['CUDA_VISIBLE_DEVICES'] = ''
+
     ''' Trains model from data '''
 
     if not os.path.exists(FLAGS.train_dir):
