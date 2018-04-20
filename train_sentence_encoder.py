@@ -1,16 +1,10 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-import numpy
 import os
 import time
-import numpy as np
+import numpy
 import tensorflow as tf
 
 import model
 from blackbox_data_reader import load_data, DOMReader
-from data_reader import Vocab
 
 flags = tf.flags
 
@@ -23,11 +17,11 @@ flags.DEFINE_string('master_file', 'main/main_10.csv', 'path to master .csv cont
 # model params
 flags.DEFINE_string ('model_choice',    'lstm',                         'model choice')
 flags.DEFINE_string ('embedding_path',  None,                           'pretrained emebdding path')
-flags.DEFINE_integer('rnn_size',        650,                            'size of LSTM internal state')
+flags.DEFINE_integer('rnn_size',        100,                            'size of LSTM internal state')
 flags.DEFINE_integer('highway_layers',  2,                              'number of highway layers')
-flags.DEFINE_integer('word_embed_size', 1,                             'dimensionality of word embeddings')
-flags.DEFINE_string ('kernels',         '[1,2,3,4,5,6,7]',              'CNN kernel widths')
-flags.DEFINE_string ('kernel_features', '[50,100,150,200,200,200,200]', 'number of features in the CNN kernel')
+flags.DEFINE_integer('word_embed_size', 1,                              'dimensionality of word embeddings')
+flags.DEFINE_string ('kernels',         '[3,4,5]',                      'CNN kernel widths')
+flags.DEFINE_string ('kernel_features', '[10,10,10]',                   'number of features in the CNN kernel')
 flags.DEFINE_integer('rnn_layers',      2,                              'number of layers in the LSTM')
 flags.DEFINE_float  ('dropout',         0.5,                            'dropout. 0 = no dropout')
 
@@ -39,7 +33,7 @@ flags.DEFINE_float  ('param_init',          0.05, 'initialize parameters at')
 flags.DEFINE_integer('batch_size',          5,   'number of sequences to train on in parallel')
 flags.DEFINE_integer('max_epochs',          25,   'number of full passes through the training data')
 flags.DEFINE_float  ('max_grad_norm',       5.0,  'normalize gradients at')
-flags.DEFINE_integer('max_doc_length',      2000,   'max_doc_length')
+flags.DEFINE_integer('max_doc_length',      50,   'max_doc_length')
 flags.DEFINE_integer('max_sen_length',      50,   'maximum sentence length')
 
 # bookkeeping
@@ -73,13 +67,13 @@ def run_test(session, m, data, batch_size, num_steps):
 def load_wordvec(embedding_path, word_vocab):
     '''loads pretrained word vectors'''
 
-    initW = np.random.uniform(-0.25, 0.25, (word_vocab.size, FLAGS.word_embed_size))
+    initW = numpy.random.uniform(-0.25, 0.25, (word_vocab.size, FLAGS.word_embed_size))
     with open(embedding_path, "r") as f:
         for line in f:
             line = line.rstrip().split(' ')
             word, vec = line[0], line[1:]
             if word_vocab.token2index.has_key(word):
-                initW[word_vocab[word]] = np.asarray([float(x) for x in vec])
+                initW[word_vocab[word]] = numpy.asarray([float(x) for x in vec])
     return initW
 
 
@@ -229,7 +223,7 @@ def main(_):
 
         # tensorflow seed must be inside graph
         tf.set_random_seed(FLAGS.seed)
-        np.random.seed(seed=FLAGS.seed)
+        numpy.random.seed(seed=FLAGS.seed)
 
         ''' build training graph '''
         initializer = tf.random_uniform_initializer(-FLAGS.param_init, FLAGS.param_init)
@@ -289,7 +283,7 @@ def main(_):
                     print('%6d: %d [%5d/%5d], train_loss/perplexity = %6.8f/%6.7f secs/batch = %.4fs, grad.norm=%6.8f' % (step,
                                                             epoch, count,
                                                             train_reader.length,
-                                                            loss, np.exp(loss),
+                                                            loss, numpy.exp(loss),
                                                             time_elapsed,
                                                             gradient_norm))
 
@@ -311,12 +305,12 @@ def main(_):
                 })
 
                 if count % FLAGS.print_every == 0:
-                    print("\t> validation loss = %6.8f, perplexity = %6.8f" % (loss, np.exp(loss)))
+                    print("\t> validation loss = %6.8f, perplexity = %6.8f" % (loss, numpy.exp(loss)))
                 avg_valid_loss += loss / valid_reader.length
 
             print("at the end of epoch:", epoch)
-            print("train loss = %6.8f, perplexity = %6.8f" % (avg_train_loss, np.exp(avg_train_loss)))
-            print("validation loss = %6.8f, perplexity = %6.8f" % (avg_valid_loss, np.exp(avg_valid_loss)))
+            print("train loss = %6.8f, perplexity = %6.8f" % (avg_train_loss, numpy.exp(avg_train_loss)))
+            print("validation loss = %6.8f, perplexity = %6.8f" % (avg_valid_loss, numpy.exp(avg_valid_loss)))
 
             save_as = '%s/epoch%03d_%.4f.model' % (FLAGS.train_dir, epoch, avg_valid_loss)
             saver.save(session, save_as)
@@ -330,7 +324,7 @@ def main(_):
             summary_writer.add_summary(summary, step)
 
             ''' decide if need to decay learning rate '''
-            if best_valid_loss is not None and np.exp(avg_valid_loss) > np.exp(best_valid_loss) - FLAGS.decay_when:
+            if best_valid_loss is not None and numpy.exp(avg_valid_loss) > numpy.exp(best_valid_loss) - FLAGS.decay_when:
                 print('validation perplexity did not improve enough, decay learning rate')
                 current_learning_rate = session.run(train_model.learning_rate)
                 print('learning rate was:', current_learning_rate)
