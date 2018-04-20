@@ -84,15 +84,15 @@ def load_wordvec(embedding_path, word_vocab):
     return initW
 
 
-# def sparse2dense(x, vocab_size):
-#     """converts a sparse input to a dense representation, for computing the reconstruction loss"""
-#
-#     x_dense = np.zeros([x.shape[0], x.shape[1], vocab_size], dtype=np.int32)
-#     for i in xrange(x.shape[0]):
-#         for j in xrange(x.shape[1]):
-#             data_idx = x[i][j]
-#             x_dense[i][j][data_idx] = 1
-#     return x_dense
+def sparse2dense(x, char_vocab_size):
+    """converts a sparse input to a dense representation, for computing the reconstruction loss"""
+
+    x_dense = np.zeros([x.shape[0], x.shape[1], char_vocab_size], dtype=np.int32)
+    for i in xrange(x.shape[0]):
+        for j in xrange(x.shape[1]):
+            data_idx = x[i][j]
+            x_dense[i][j][data_idx] = 1
+    return x_dense
 
 
 def build_model(char_vocab_size, train):
