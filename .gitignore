@@ -1,1 +1,10 @@
+# PyCharm dirs
 .idea/
+
+# Dolphin files
+.directory
+
+__pycache__/
+
+# Output from training
+cv/
