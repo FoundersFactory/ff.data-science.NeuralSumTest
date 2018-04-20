@@ -31,7 +31,7 @@ def load_wordvec(embedding_path):
     return word_vec
 
 
-def load_nn_score(nn_score_path):
+def load_nn_score(nn_score_dir):
     '''load the output scores predicted by an NN model
        this is a json file, which maps file name to a list of sentence scores'''
     scores = {}
