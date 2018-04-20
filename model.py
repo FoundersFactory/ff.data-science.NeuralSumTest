@@ -259,7 +259,6 @@ def lstm_doc_dec(input_cnn, final_enc_state,
     )
 
 
-
 def self_prediction(outputs, word_vocab_size):
 
     # predicting the words in therein, like a paragraph vector

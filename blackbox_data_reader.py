@@ -56,7 +56,7 @@ class Vocab:
         return cls(token2index, index2token)
 
 
-def load_data(data_dir, master_file, batch_size=100):
+def load_data(data_dir, a_master_file, max_doc_length, max_sen_length):
     """
     Load training data for CNN through following steps:
         i) Go through data directory, find master file containing list of filepaths & ground truths
@@ -66,18 +66,16 @@ def load_data(data_dir, master_file, batch_size=100):
         v) Return encoded sentence lists, sentence ground truths, max sentence length
 
     :param data_dir: Str, path to root data directory
-    :param master_file: Str, name of master file containing filepaths and ground truths
+    :param a_master_file: Str, name of master file containing filepaths and ground truths
     :return: dict (sentences), dict (sentence-level truths), int (max sentence length)
     """
     doms = []
     line_truths = []
+    word_vocab = Vocab()
 
     # Read master CSV listing paths and ground truths
-    # TODO: don't hard-code this
-    master_file = 'main/main_10.csv'
-
-    print('Reading', master_file)
-    pname = os.path.join(data_dir, master_file)
+    print('Reading', a_master_file)
+    pname = os.path.join(data_dir, a_master_file)
 
     with codecs.open(pname, 'r', 'utf-8') as f:
         # Note - header line is skipped
@@ -89,13 +87,23 @@ def load_data(data_dir, master_file, batch_size=100):
             # Remove leading/trailing whitespace (isolating html)
             dom = [line.strip() for line in f.read().split('\n')]
             dom = list(filter(None, dom))
+            dom = dom[:max_doc_length]
 
             # Separate out the ground truths
             line_truth = [line.split('\t\t\t')[1] for line in dom]
             dom = [line.split('\t\t\t')[0] for line in dom]
 
             # Character-encode every sentence (unicode ordering)
-            dom = [[ord(c) for c in line] for line in dom]
+            a_line_list = list()
+            for line in dom:
+                a_char_list = list()
+                for idx, c in enumerate(line):
+                    if idx > max_sen_length -1:
+                        break
+                    a_char_list.append(word_vocab.feed(c))
+                a_line_list.append(a_char_list)
+
+            dom = a_line_list
 
         doms.append(dom)
         line_truths.append(line_truth)
@@ -116,7 +124,7 @@ def load_data(data_dir, master_file, batch_size=100):
     print("Maximum DOM length (lines):", max_dom_length)
     print("Maximum sentence length (chars):", max_line_length)
 
-    return line_tensor, label_tensor, max_dom_length, max_line_length
+    return line_tensor, label_tensor, max_dom_length, max_line_length, word_vocab
 
 class DOMReader:
 

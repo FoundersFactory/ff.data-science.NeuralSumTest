@@ -10,11 +10,10 @@ import tensorflow as tf
 import model
 from data_reader import load_data, DataReader
 
-
 flags = tf.flags
 
 # data
-flags.DEFINE_string('data_dir',    'data/demo',   'data directory. Should contain train.txt/valid.txt/test.txt with input data')
+flags.DEFINE_string('data_dir',    '/export/projects/NeuralSum/data/neuralsum/cnn',   'data directory. Should contain train.txt/valid.txt/test.txt with input data')
 flags.DEFINE_string('train_dir',   'cv',     'training directory (models and summaries are saved there periodically)')
 flags.DEFINE_string('load_model',   None,    '(optional) filename of the model to load. Useful for re-starting training from a checkpoint')
 
@@ -77,7 +76,7 @@ def load_wordvec(embedding_path, word_vocab):
             line = line.rstrip().split(' ')
             word, vec = line[0], line[1:]
             if word_vocab.token2index.has_key(word):
-                initW[word_vocab[word]] = np.asarray([float(x) for x in vec]) 
+                initW[word_vocab[word]] = np.asarray([float(x) for x in vec])
     return initW
 
 
@@ -144,7 +143,7 @@ def build_model(word_vocab, max_doc_length, train):
             my_model.update(model.loss_extraction(my_model.logits, FLAGS.batch_size, max_doc_length))
 
             my_model.update(model.training_graph(my_model.loss * max_doc_length,
-                    FLAGS.learning_rate, FLAGS.max_grad_norm))            
+                    FLAGS.learning_rate, FLAGS.max_grad_norm))
 
     else:
         if FLAGS.model_choice == 'bilstm':
@@ -205,8 +204,7 @@ def main(_):
         os.mkdir(FLAGS.train_dir)
         print('Created training directory', FLAGS.train_dir)
 
-    word_vocab, word_tensors, max_doc_length, label_tensors = \
-        load_data(FLAGS.data_dir, FLAGS.max_doc_length, FLAGS.max_sen_length)
+    word_vocab, word_tensors, max_doc_length, label_tensors = load_data(FLAGS.data_dir, FLAGS.max_doc_length, FLAGS.max_sen_length)
 
     train_reader = DataReader(word_tensors['train'], label_tensors['train'],
                               FLAGS.batch_size)
